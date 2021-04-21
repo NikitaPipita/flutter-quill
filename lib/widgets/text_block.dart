@@ -122,6 +122,7 @@ class EditableTextBlock extends StatelessWidget {
             styles: styles!,
           ),
           _getIndentWidth(),
+          _getEndIndentWidth(),
           _getSpacingForLine(line, index, count, defaultStyles),
           textDirection,
           textSelection,

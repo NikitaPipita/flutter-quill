@@ -625,6 +625,7 @@ class RawEditorState extends EditorState
         null,
         textLine,
         0,
+        0,
         _getVerticalSpacingForLine(node, _styles),
         _textDirection,
         widget.controller.selection,
