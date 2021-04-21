@@ -67,7 +67,7 @@ class TextLine extends StatelessWidget {
   TextAlign _getTextAlign() {
     final alignment = line.style.attributes[Attribute.align.key];
     if (alignment == Attribute.leftAlignment) {
-      return TextAlign.left;
+      return TextAlign.start;
     } else if (alignment == Attribute.centerAlignment) {
       return TextAlign.center;
     } else if (alignment == Attribute.rightAlignment) {
