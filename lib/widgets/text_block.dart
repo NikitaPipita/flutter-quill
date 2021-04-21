@@ -85,7 +85,7 @@ class EditableTextBlock extends StatelessWidget {
     return _EditableBlock(
         block,
         textDirection,
-        Tuple2<double, double>(0, 0),
+        const Tuple2<double, double>(0, 0),
         scrollBottomInset,
         _getDecorationForBlock(block, defaultStyles) ?? const BoxDecoration(),
         contentPadding,

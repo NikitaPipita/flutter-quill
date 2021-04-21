@@ -269,10 +269,10 @@ class EditableTextLine extends RenderObjectWidget {
 
   EdgeInsetsGeometry _getPadding() {
     return EdgeInsetsDirectional.only(
-        start: indentWidth,
+        start: line.hasEmbed ? indentWidth : 0,
         top: verticalSpacing.item1,
         bottom: verticalSpacing.item2,
-        end: endIndentWidth);
+        end: line.hasEmbed ? endIndentWidth : 0);
   }
 }
 
