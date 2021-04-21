@@ -208,6 +208,7 @@ class EditableTextLine extends RenderObjectWidget {
     this.leading,
     this.body,
     this.indentWidth,
+    this.endIndentWidth,
     this.verticalSpacing,
     this.textDirection,
     this.textSelection,
@@ -222,6 +223,7 @@ class EditableTextLine extends RenderObjectWidget {
   final Widget? leading;
   final Widget body;
   final double indentWidth;
+  final double endIndentWidth;
   final Tuple2 verticalSpacing;
   final TextDirection textDirection;
   final TextSelection textSelection;
@@ -269,7 +271,8 @@ class EditableTextLine extends RenderObjectWidget {
     return EdgeInsetsDirectional.only(
         start: indentWidth,
         top: verticalSpacing.item1,
-        bottom: verticalSpacing.item2);
+        bottom: verticalSpacing.item2,
+        end: endIndentWidth);
   }
 }
 
