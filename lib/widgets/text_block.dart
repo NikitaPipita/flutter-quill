@@ -195,11 +195,10 @@ class EditableTextBlock extends StatelessWidget {
       extraIndent = 16.0 * indent.value;
     }
 
-    if (attrs.containsKey(Attribute.centerAlignment.key) ||
-        !(attrs.containsKey(Attribute.leftAlignment.key))) {
+    if (attrs.containsKey(Attribute.centerAlignment.key)) {
       return 32.0 + extraIndent;
     }
-    return 0.0;
+    return 0;
   }
 
   double _getEndIndentWidth() {
@@ -215,7 +214,7 @@ class EditableTextBlock extends StatelessWidget {
         attrs.containsKey(Attribute.rightAlignment.key)) {
       return 32.0 + extraIndent;
     }
-    return 0.0;
+    return 0;
   }
 
   Tuple2 _getSpacingForLine(
