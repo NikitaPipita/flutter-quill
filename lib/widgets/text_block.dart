@@ -195,8 +195,8 @@ class EditableTextBlock extends StatelessWidget {
       extraIndent = 16.0 * indent.value;
     }
 
-    if (attrs.containsKey(Attribute.centerAlignment.key) ||
-        attrs.containsKey(Attribute.leftAlignment.key)) {
+    if (attrs.containsValue(Attribute.centerAlignment) ||
+        attrs.containsValue(Attribute.rightAlignment)) {
       return 32.0 + extraIndent;
     }
     return 0;
@@ -211,8 +211,8 @@ class EditableTextBlock extends StatelessWidget {
       extraIndent = 16.0 * indent.value;
     }
 
-    if (attrs.containsKey(Attribute.centerAlignment.key) ||
-        attrs.containsKey(Attribute.rightAlignment.key)) {
+    if (attrs.containsValue(Attribute.centerAlignment) ||
+        attrs.containsValue(Attribute.leftAlignment)) {
       return 32.0 + extraIndent;
     }
     return 0;
