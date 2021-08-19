@@ -32,7 +32,8 @@ class History {
   ///record delay
   final int interval;
 
-  void handleDocChange(Tuple3<Delta, Delta, ChangeSource> change) {
+  void handleDocChange(
+      Tuple3<FlutterDelta, FlutterDelta, ChangeSource> change) {
     if (ignoreChange) return;
     if (!userOnly || change.item3 == ChangeSource.LOCAL) {
       record(change.item2, change.item1);
@@ -45,7 +46,7 @@ class History {
     stack.clear();
   }
 
-  void record(Delta change, Delta before) {
+  void record(FlutterDelta change, FlutterDelta before) {
     if (change.isEmpty) return;
     stack.redo.clear();
     var undoDelta = change.invert(before);
@@ -69,12 +70,12 @@ class History {
   ///
   ///It will override pre local undo delta,replaced by remote change
   ///
-  void transform(Delta delta) {
+  void transform(FlutterDelta delta) {
     transformStack(stack.undo, delta);
     transformStack(stack.redo, delta);
   }
 
-  void transformStack(List<Delta> stack, Delta delta) {
+  void transformStack(List<FlutterDelta> stack, FlutterDelta delta) {
     for (var i = stack.length - 1; i >= 0; i -= 1) {
       final oldDelta = stack[i];
       stack[i] = delta.transform(oldDelta, true);
@@ -85,7 +86,8 @@ class History {
     }
   }
 
-  Tuple2 _change(Document doc, List<Delta> source, List<Delta> dest) {
+  Tuple2 _change(
+      Document doc, List<FlutterDelta> source, List<FlutterDelta> dest) {
     if (source.isEmpty) {
       return const Tuple2(false, 0);
     }
@@ -100,7 +102,7 @@ class History {
         len = ops[i].length! * -1;
       }
     }
-    final base = Delta.from(doc.toDelta());
+    final base = FlutterDelta.from(doc.toDelta());
     final inverseDelta = delta.invert(base);
     dest.add(inverseDelta);
     lastRecorded = 0;
@@ -124,8 +126,8 @@ class HistoryStack {
       : undo = [],
         redo = [];
 
-  final List<Delta> undo;
-  final List<Delta> redo;
+  final List<FlutterDelta> undo;
+  final List<FlutterDelta> redo;
 
   void clear() {
     undo.clear();

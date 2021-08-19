@@ -52,10 +52,10 @@ class Line extends Container<Leaf?> {
   Node newInstance() => Line();
 
   @override
-  Delta toDelta() {
+  FlutterDelta toDelta() {
     final delta = children
         .map((child) => child.toDelta())
-        .fold(Delta(), (dynamic a, b) => a.concat(b));
+        .fold(FlutterDelta(), (dynamic a, b) => a.concat(b));
     var attributes = style;
     if (parent is Block) {
       final block = parent as Block;

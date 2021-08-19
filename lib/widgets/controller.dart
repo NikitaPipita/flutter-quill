@@ -29,7 +29,8 @@ class QuillController extends ChangeNotifier {
   // item2: Change delta applied to the document.
   //
   // item3: The source of this change.
-  Stream<Tuple3<Delta, Delta, ChangeSource>> get changes => document.changes;
+  Stream<Tuple3<FlutterDelta, FlutterDelta, ChangeSource>> get changes =>
+      document.changes;
 
   TextEditingValue get plainTextEditingValue => TextEditingValue(
         text: document.toPlainText(),
@@ -79,7 +80,7 @@ class QuillController extends ChangeNotifier {
       int index, int len, Object? data, TextSelection? textSelection) {
     assert(data is String || data is Embeddable);
 
-    Delta? delta;
+    FlutterDelta? delta;
     if (len > 0 || data is! String || data.isNotEmpty) {
       delta = document.replace(index, len, data);
       var shouldRetainDelta = toggledStyle.isNotEmpty &&
@@ -98,7 +99,7 @@ class QuillController extends ChangeNotifier {
         }
       }
       if (shouldRetainDelta) {
-        final retainDelta = Delta()
+        final retainDelta = FlutterDelta()
           ..retain(index)
           ..retain(data is String ? data.length : 1, toggledStyle.toJson());
         document.compose(retainDelta, ChangeSource.LOCAL);
@@ -110,7 +111,7 @@ class QuillController extends ChangeNotifier {
       if (delta == null || delta.isEmpty) {
         _updateSelection(textSelection, ChangeSource.LOCAL);
       } else {
-        final user = Delta()
+        final user = FlutterDelta()
           ..retain(index)
           ..insert(data)
           ..delete(len);
@@ -153,7 +154,8 @@ class QuillController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void compose(Delta delta, TextSelection textSelection, ChangeSource source) {
+  void compose(
+      FlutterDelta delta, TextSelection textSelection, ChangeSource source) {
     if (delta.isNotEmpty) {
       document.compose(delta, source);
     }

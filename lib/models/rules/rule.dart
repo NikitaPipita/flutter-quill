@@ -10,7 +10,7 @@ enum RuleType { INSERT, DELETE, FORMAT }
 abstract class Rule {
   const Rule();
 
-  Delta? apply(Delta document, int index,
+  FlutterDelta? apply(FlutterDelta document, int index,
       {int? len, Object? data, Attribute? attribute}) {
     validateArgs(len, data, attribute);
     return applyRule(document, index,
@@ -19,7 +19,7 @@ abstract class Rule {
 
   void validateArgs(int? len, Object? data, Attribute? attribute);
 
-  Delta? applyRule(Delta document, int index,
+  FlutterDelta? applyRule(FlutterDelta document, int index,
       {int? len, Object? data, Attribute? attribute});
 
   RuleType get type;
@@ -49,7 +49,7 @@ class Rules {
 
   static Rules getInstance() => _instance;
 
-  Delta apply(RuleType ruleType, Document document, int index,
+  FlutterDelta apply(RuleType ruleType, Document document, int index,
       {int? len, Object? data, Attribute? attribute}) {
     final delta = document.toDelta();
     for (final rule in _rules) {

@@ -45,10 +45,10 @@ abstract class Leaf extends Node {
   }
 
   @override
-  Delta toDelta() {
+  FlutterDelta toDelta() {
     final data =
         _value is Embeddable ? (_value as Embeddable).toJson() : _value;
-    return Delta()..insert(data, style.toJson());
+    return FlutterDelta()..insert(data, style.toJson());
   }
 
   @override

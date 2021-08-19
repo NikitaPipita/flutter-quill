@@ -20,9 +20,9 @@ class CatchAllDeleteRule extends DeleteRule {
   const CatchAllDeleteRule();
 
   @override
-  Delta applyRule(Delta document, int index,
+  FlutterDelta applyRule(FlutterDelta document, int index,
       {int? len, Object? data, Attribute? attribute}) {
-    return Delta()
+    return FlutterDelta()
       ..retain(index)
       ..delete(len!);
   }
@@ -32,7 +32,7 @@ class PreserveLineStyleOnMergeRule extends DeleteRule {
   const PreserveLineStyleOnMergeRule();
 
   @override
-  Delta? applyRule(Delta document, int index,
+  FlutterDelta? applyRule(FlutterDelta document, int index,
       {int? len, Object? data, Attribute? attribute}) {
     final itr = DeltaIterator(document)..skip(index);
     var op = itr.next(1);
@@ -44,7 +44,7 @@ class PreserveLineStyleOnMergeRule extends DeleteRule {
     final attrs = op.attributes;
 
     itr.skip(len! - 1);
-    final delta = Delta()
+    final delta = FlutterDelta()
       ..retain(index)
       ..delete(len);
 
@@ -77,7 +77,7 @@ class EnsureEmbedLineRule extends DeleteRule {
   const EnsureEmbedLineRule();
 
   @override
-  Delta? applyRule(Delta document, int index,
+  FlutterDelta? applyRule(FlutterDelta document, int index,
       {int? len, Object? data, Attribute? attribute}) {
     final itr = DeltaIterator(document);
 
@@ -117,7 +117,7 @@ class EnsureEmbedLineRule extends DeleteRule {
       return null;
     }
 
-    return Delta()
+    return FlutterDelta()
       ..retain(index + indexDelta)
       ..delete(len! + lengthDelta);
   }

@@ -105,7 +105,7 @@ abstract class Node extends LinkedListEntry<Node> {
 
   String toPlainText();
 
-  Delta toDelta();
+  FlutterDelta toDelta();
 
   void insert(int index, Object data, Style? style);
 
@@ -125,7 +125,7 @@ class Root extends Container<Container<Node?>> {
   Container<Node?> get defaultChild => Line();
 
   @override
-  Delta toDelta() => children
+  FlutterDelta toDelta() => children
       .map((child) => child.toDelta())
-      .fold(Delta(), (a, b) => a.concat(b));
+      .fold(FlutterDelta(), (a, b) => a.concat(b));
 }

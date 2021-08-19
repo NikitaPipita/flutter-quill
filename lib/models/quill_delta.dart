@@ -179,15 +179,15 @@ class Operation {
 /// Delta consisting of only "insert" operations is usually referred to as
 /// "document delta". When delta includes also "retain" or "delete" operations
 /// it is a "change delta".
-class Delta {
-  /// Creates new empty [Delta].
-  factory Delta() => Delta._(<Operation>[]);
+class FlutterDelta {
+  /// Creates new empty [FlutterDelta].
+  factory FlutterDelta() => FlutterDelta._(<Operation>[]);
 
-  Delta._(List<Operation> operations) : _operations = operations;
+  FlutterDelta._(List<Operation> operations) : _operations = operations;
 
-  /// Creates new [Delta] from [other].
-  factory Delta.from(Delta other) =>
-      Delta._(List<Operation>.from(other._operations));
+  /// Creates new [FlutterDelta] from [other].
+  factory FlutterDelta.from(FlutterDelta other) =>
+      FlutterDelta._(List<Operation>.from(other._operations));
 
   /// Transforms two attribute sets.
   static Map<String, dynamic>? transformAttributes(
@@ -251,12 +251,12 @@ class Delta {
 
   int _modificationCount = 0;
 
-  /// Creates [Delta] from de-serialized JSON representation.
+  /// Creates [FlutterDelta] from de-serialized JSON representation.
   ///
   /// If `dataDecoder` parameter is not null then it is used to additionally
   /// decode the operation's data object. Only applied to insert operations.
-  static Delta fromJson(List data, {DataDecoder? dataDecoder}) {
-    return Delta._(data
+  static FlutterDelta fromJson(List data, {DataDecoder? dataDecoder}) {
+    return FlutterDelta._(data
         .map((op) => Operation.fromJson(op, dataDecoder: dataDecoder))
         .toList());
   }
@@ -291,7 +291,7 @@ class Delta {
   @override
   bool operator ==(dynamic other) {
     if (identical(this, other)) return true;
-    if (other is! Delta) return false;
+    if (other is! FlutterDelta) return false;
     final typedOther = other;
     const comparator = ListEquality<Operation>(DefaultEquality<Operation>());
     return comparator.equals(_operations, typedOther._operations);
@@ -425,12 +425,12 @@ class Delta {
     return null;
   }
 
-  /// Composes this delta with [other] and returns new [Delta].
+  /// Composes this delta with [other] and returns new [FlutterDelta].
   ///
   /// It is not required for this and [other] delta to represent a document
   /// delta (consisting only of insert operations).
-  Delta compose(Delta other) {
-    final result = Delta();
+  FlutterDelta compose(FlutterDelta other) {
+    final result = FlutterDelta();
     final thisIter = DeltaIterator(this);
     final otherIter = DeltaIterator(other);
 
@@ -474,8 +474,8 @@ class Delta {
   }
 
   /// Transforms [other] delta against operations in this delta.
-  Delta transform(Delta other, bool priority) {
-    final result = Delta();
+  FlutterDelta transform(FlutterDelta other, bool priority) {
+    final result = FlutterDelta();
     final thisIter = DeltaIterator(this);
     final otherIter = DeltaIterator(other);
 
@@ -495,8 +495,8 @@ class Delta {
   }
 
   /// Concatenates [other] with this delta and returns the result.
-  Delta concat(Delta other) {
-    final result = Delta.from(this);
+  FlutterDelta concat(FlutterDelta other) {
+    final result = FlutterDelta.from(this);
     if (other.isNotEmpty) {
       // In case first operation of other can be merged with last operation in
       // our list.
@@ -510,8 +510,8 @@ class Delta {
   ///
   /// Returns new delta which negates effect of this delta when applied to
   /// [base]. This is an equivalent of "undo" operation on deltas.
-  Delta invert(Delta base) {
-    final inverted = Delta();
+  FlutterDelta invert(FlutterDelta base) {
+    final inverted = FlutterDelta();
     if (base.isEmpty) return inverted;
 
     var baseIndex = 0;
@@ -545,8 +545,8 @@ class Delta {
 
   /// Returns slice of this delta from [start] index (inclusive) to [end]
   /// (exclusive).
-  Delta slice(int start, [int? end]) {
-    final delta = Delta();
+  FlutterDelta slice(int start, [int? end]) {
+    final delta = FlutterDelta();
     var index = 0;
     final opIterator = DeltaIterator(this);
 
@@ -597,11 +597,11 @@ class Delta {
   String toString() => _operations.join('\n');
 }
 
-/// Specialized iterator for [Delta]s.
+/// Specialized iterator for [FlutterDelta]s.
 class DeltaIterator {
   DeltaIterator(this.delta) : _modificationCount = delta._modificationCount;
 
-  final Delta delta;
+  final FlutterDelta delta;
   final int _modificationCount;
   int _index = 0;
   num _offset = 0;

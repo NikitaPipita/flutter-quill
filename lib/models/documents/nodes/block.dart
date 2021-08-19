@@ -22,10 +22,10 @@ class Block extends Container<Line?> {
   Line get defaultChild => Line();
 
   @override
-  Delta toDelta() {
+  FlutterDelta toDelta() {
     return children
         .map((child) => child.toDelta())
-        .fold(Delta(), (a, b) => a.concat(b));
+        .fold(FlutterDelta(), (a, b) => a.concat(b));
   }
 
   @override

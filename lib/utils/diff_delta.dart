@@ -66,7 +66,7 @@ Diff getDiff(String oldText, String newText, int cursorPosition) {
   return Diff(start, deleted, inserted);
 }
 
-int getPositionDelta(Delta user, Delta actual) {
+int getPositionDelta(FlutterDelta user, FlutterDelta actual) {
   if (actual.isEmpty) {
     return 0;
   }

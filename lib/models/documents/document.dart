@@ -15,15 +15,16 @@ import 'style.dart';
 
 /// The rich text document
 class Document {
-  Document() : _delta = Delta()..insert('\n') {
+  Document() : _delta = FlutterDelta()..insert('\n') {
     _loadDocument(_delta);
   }
 
-  Document.fromJson(List data) : _delta = _transform(Delta.fromJson(data)) {
+  Document.fromJson(List data)
+      : _delta = _transform(FlutterDelta.fromJson(data)) {
     _loadDocument(_delta);
   }
 
-  Document.fromDelta(Delta delta) : _delta = delta {
+  Document.fromDelta(FlutterDelta delta) : _delta = delta {
     _loadDocument(delta);
   }
 
@@ -34,26 +35,27 @@ class Document {
 
   int get length => _root.length;
 
-  Delta _delta;
+  FlutterDelta _delta;
 
-  Delta toDelta() => Delta.from(_delta);
+  FlutterDelta toDelta() => FlutterDelta.from(_delta);
 
   final Rules _rules = Rules.getInstance();
 
-  final StreamController<Tuple3<Delta, Delta, ChangeSource>> _observer =
-      StreamController.broadcast();
+  final StreamController<Tuple3<FlutterDelta, FlutterDelta, ChangeSource>>
+      _observer = StreamController.broadcast();
 
   final History _history = History();
 
-  Stream<Tuple3<Delta, Delta, ChangeSource>> get changes => _observer.stream;
+  Stream<Tuple3<FlutterDelta, FlutterDelta, ChangeSource>> get changes =>
+      _observer.stream;
 
-  Delta insert(int index, Object? data, {int replaceLength = 0}) {
+  FlutterDelta insert(int index, Object? data, {int replaceLength = 0}) {
     assert(index >= 0);
     assert(data is String || data is Embeddable);
     if (data is Embeddable) {
       data = data.toJson();
     } else if ((data as String).isEmpty) {
-      return Delta();
+      return FlutterDelta();
     }
 
     final delta = _rules.apply(RuleType.INSERT, this, index,
@@ -62,7 +64,7 @@ class Document {
     return delta;
   }
 
-  Delta delete(int index, int len) {
+  FlutterDelta delete(int index, int len) {
     assert(index >= 0 && len > 0);
     final delta = _rules.apply(RuleType.DELETE, this, index, len: len);
     if (delta.isNotEmpty) {
@@ -71,7 +73,7 @@ class Document {
     return delta;
   }
 
-  Delta replace(int index, int len, Object? data) {
+  FlutterDelta replace(int index, int len, Object? data) {
     assert(index >= 0);
     assert(data is String || data is Embeddable);
 
@@ -79,7 +81,7 @@ class Document {
 
     assert(dataIsNotEmpty || len > 0);
 
-    var delta = Delta();
+    var delta = FlutterDelta();
 
     // We have to insert before applying delete rules
     // Otherwise delete would be operating on stale document snapshot.
@@ -95,10 +97,10 @@ class Document {
     return delta;
   }
 
-  Delta format(int index, int len, Attribute? attribute) {
+  FlutterDelta format(int index, int len, Attribute? attribute) {
     assert(index >= 0 && len >= 0 && attribute != null);
 
-    var delta = Delta();
+    var delta = FlutterDelta();
 
     final formatDelta = _rules.apply(RuleType.FORMAT, this, index,
         len: len, attribute: attribute);
@@ -124,7 +126,7 @@ class Document {
     return block.queryChild(res.offset, true);
   }
 
-  void compose(Delta delta, ChangeSource changeSource) {
+  void compose(FlutterDelta delta, ChangeSource changeSource) {
     assert(!_observer.isClosed);
     delta.trim();
     assert(delta.isNotEmpty);
@@ -174,8 +176,8 @@ class Document {
 
   bool get hasRedo => _history.hasRedo;
 
-  static Delta _transform(Delta delta) {
-    final res = Delta();
+  static FlutterDelta _transform(FlutterDelta delta) {
+    final res = FlutterDelta();
     final ops = delta.toList();
     for (var i = 0; i < ops.length; i++) {
       final op = ops[i];
@@ -186,7 +188,7 @@ class Document {
   }
 
   static void _handleImageInsert(
-      int i, List<Operation> ops, Operation op, Delta res) {
+      int i, List<Operation> ops, Operation op, FlutterDelta res) {
     final nextOpIsImage =
         i + 1 < ops.length && ops[i + 1].isInsert && ops[i + 1].data is! String;
     if (nextOpIsImage && !(op.data as String).endsWith('\n')) {
@@ -222,7 +224,7 @@ class Document {
 
   String toPlainText() => _root.children.map((e) => e.toPlainText()).join();
 
-  void _loadDocument(Delta doc) {
+  void _loadDocument(FlutterDelta doc) {
     assert((doc.last.data as String).endsWith('\n'));
     var offset = 0;
     for (final op in doc.toList()) {

@@ -20,13 +20,13 @@ class ResolveLineFormatRule extends FormatRule {
   const ResolveLineFormatRule();
 
   @override
-  Delta? applyRule(Delta document, int index,
+  FlutterDelta? applyRule(FlutterDelta document, int index,
       {int? len, Object? data, Attribute? attribute}) {
     if (attribute!.scope != AttributeScope.BLOCK) {
       return null;
     }
 
-    var delta = Delta()..retain(index);
+    var delta = FlutterDelta()..retain(index);
     final itr = DeltaIterator(document)..skip(index);
     Operation op;
     for (var cur = 0; cur < len! && itr.hasNext; cur += op.length!) {
@@ -36,7 +36,7 @@ class ResolveLineFormatRule extends FormatRule {
         continue;
       }
       final text = op.data as String;
-      final tmp = Delta();
+      final tmp = FlutterDelta();
       var offset = 0;
 
       for (var lineBreak = text.indexOf('\n');
@@ -68,13 +68,13 @@ class FormatLinkAtCaretPositionRule extends FormatRule {
   const FormatLinkAtCaretPositionRule();
 
   @override
-  Delta? applyRule(Delta document, int index,
+  FlutterDelta? applyRule(FlutterDelta document, int index,
       {int? len, Object? data, Attribute? attribute}) {
     if (attribute!.key != Attribute.link.key || len! > 0) {
       return null;
     }
 
-    final delta = Delta();
+    final delta = FlutterDelta();
     final itr = DeltaIterator(document);
     final before = itr.skip(index), after = itr.next();
     int? beg = index, retain = 0;
@@ -98,13 +98,13 @@ class ResolveInlineFormatRule extends FormatRule {
   const ResolveInlineFormatRule();
 
   @override
-  Delta? applyRule(Delta document, int index,
+  FlutterDelta? applyRule(FlutterDelta document, int index,
       {int? len, Object? data, Attribute? attribute}) {
     if (attribute!.scope != AttributeScope.INLINE) {
       return null;
     }
 
-    final delta = Delta()..retain(index);
+    final delta = FlutterDelta()..retain(index);
     final itr = DeltaIterator(document)..skip(index);
 
     Operation op;
