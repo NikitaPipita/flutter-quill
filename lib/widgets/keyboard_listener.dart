@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 
 enum InputShortcut { CUT, COPY, PASTE, SELECT_ALL }
 
@@ -8,8 +9,8 @@ typedef CursorMoveCallback = void Function(
 typedef InputShortcutCallback = void Function(InputShortcut? shortcut);
 typedef OnDeleteCallback = void Function(bool forward);
 
-class KeyboardListener {
-  KeyboardListener(this.onCursorMove, this.onShortcut, this.onDelete);
+class KeyboardEventHandler {
+  KeyboardEventHandler(this.onCursorMove, this.onShortcut, this.onDelete);
 
   final CursorMoveCallback onCursorMove;
   final InputShortcutCallback onShortcut;
@@ -62,14 +63,14 @@ class KeyboardListener {
     LogicalKeyboardKey.keyA: InputShortcut.SELECT_ALL,
   };
 
-  bool handleRawKeyEvent(RawKeyEvent event) {
+  KeyEventResult handleRawKeyEvent(RawKeyEvent event) {
     if (kIsWeb) {
-      // On web platform, we should ignore the key because it's processed already.
-      return false;
+      // On web platform, we ignore the key because it's already processed.
+      return KeyEventResult.ignored;
     }
 
     if (event is! RawKeyDownEvent) {
-      return false;
+      return KeyEventResult.ignored;
     }
 
     final keysPressed =
@@ -82,24 +83,26 @@ class KeyboardListener {
                 .length >
             1 ||
         keysPressed.difference(_interestingKeys).isNotEmpty) {
-      return false;
+      return KeyEventResult.ignored;
     }
 
+    final isShortcutModifierPressed =
+        isMacOS ? event.isMetaPressed : event.isControlPressed;
     if (_moveKeys.contains(key)) {
       onCursorMove(
           key,
           isMacOS ? event.isAltPressed : event.isControlPressed,
           isMacOS ? event.isMetaPressed : event.isAltPressed,
           event.isShiftPressed);
-    } else if (isMacOS
-        ? event.isMetaPressed
-        : event.isControlPressed && _shortcutKeys.contains(key)) {
+    } else if (isShortcutModifierPressed && _shortcutKeys.contains(key)) {
       onShortcut(_keyToShortcut[key]);
     } else if (key == LogicalKeyboardKey.delete) {
       onDelete(true);
     } else if (key == LogicalKeyboardKey.backspace) {
       onDelete(false);
+    } else {
+      return KeyEventResult.ignored;
     }
-    return false;
+    return KeyEventResult.handled;
   }
 }

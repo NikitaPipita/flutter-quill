@@ -21,7 +21,7 @@ import 'cursor.dart';
 import 'default_styles.dart';
 import 'delegate.dart';
 import 'editor.dart';
-import 'keyboard_listener.dart';
+import 'keyboard_listener.dart' as quill;
 import 'proxy.dart';
 import 'text_block.dart';
 import 'text_line.dart';
@@ -112,7 +112,7 @@ class RawEditorState extends EditorState
   ScrollController? _scrollController;
   KeyboardVisibilityController? _keyboardVisibilityController;
   StreamSubscription<bool>? _keyboardVisibilitySubscription;
-  late KeyboardListener _keyboardListener;
+  late quill.KeyboardEventHandler _keyboardListener;
   bool _didAutoFocus = false;
   bool _keyboardVisible = false;
   DefaultStyles? _styles;
@@ -687,7 +687,7 @@ class RawEditorState extends EditorState
       tickerProvider: this,
     );
 
-    _keyboardListener = KeyboardListener(
+    _keyboardListener = quill.KeyboardEventHandler(
       handleCursorMovement,
       handleShortcut,
       handleDelete,
@@ -810,17 +810,17 @@ class RawEditorState extends EditorState
     );
   }
 
-  Future<void> handleShortcut(InputShortcut? shortcut) async {
+  Future<void> handleShortcut(quill.InputShortcut? shortcut) async {
     final selection = widget.controller.selection;
     final plainText = textEditingValue.text;
-    if (shortcut == InputShortcut.COPY) {
+    if (shortcut == quill.InputShortcut.COPY) {
       if (!selection.isCollapsed) {
         await Clipboard.setData(
             ClipboardData(text: selection.textInside(plainText)));
       }
       return;
     }
-    if (shortcut == InputShortcut.CUT && !widget.readOnly) {
+    if (shortcut == quill.InputShortcut.CUT && !widget.readOnly) {
       if (!selection.isCollapsed) {
         final data = selection.textInside(plainText);
         await Clipboard.setData(ClipboardData(text: data));
@@ -840,7 +840,7 @@ class RawEditorState extends EditorState
       }
       return;
     }
-    if (shortcut == InputShortcut.PASTE && !widget.readOnly) {
+    if (shortcut == quill.InputShortcut.PASTE && !widget.readOnly) {
       final data = await Clipboard.getData(Clipboard.kTextPlain);
       if (data != null) {
         widget.controller.replaceText(
@@ -852,7 +852,7 @@ class RawEditorState extends EditorState
       }
       return;
     }
-    if (shortcut == InputShortcut.SELECT_ALL &&
+    if (shortcut == quill.InputShortcut.SELECT_ALL &&
         widget.enableInteractiveSelection) {
       widget.controller.updateSelection(
           selection.copyWith(
@@ -1131,7 +1131,8 @@ class RawEditorState extends EditorState
   }
 
   @override
-  void userUpdateTextEditingValue(TextEditingValue value, SelectionChangedCause cause) {
+  void userUpdateTextEditingValue(
+      TextEditingValue value, SelectionChangedCause cause) {
     // TODO: implement userUpdateTextEditingValue
   }
 }
